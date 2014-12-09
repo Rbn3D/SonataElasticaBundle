@@ -152,7 +152,10 @@ class ElasticaProxyRepository
         }
 
         if (!count($params)) {
-            $mainQuery->addMust(new Wildcard());
+            $all = new QueryText('*');
+            $all->setFields(['_all']);
+            $all->setAllowLeadingWildcard();
+            $mainQuery->addMust($all);
         }
 
         return new Query($mainQuery);
