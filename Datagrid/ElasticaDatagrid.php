@@ -26,7 +26,7 @@ class ElasticaDatagrid extends Datagrid
      * @param FormBuilder                $formBuilder
      * @param array                      $values
      */
-    public function __construct(ProxyQueryInterface $query, AbstractType $searchForm, FieldDescriptionCollection $columns, PagerInterface $pager, FormBuilder $formBuilder, array $values = array())
+    public function __construct(ProxyQueryInterface $query, $searchForm, FieldDescriptionCollection $columns, PagerInterface $pager, FormBuilder $formBuilder, array $values = array())
     {
         parent::__construct($query, $columns, $pager, $formBuilder, $values);
 

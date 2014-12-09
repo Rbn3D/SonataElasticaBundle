@@ -26,7 +26,7 @@ class ElasticaDatagridBuilder extends BaseDatagridBuilder
      * @param TypeGuesserInterface    $guesser
      * @param ElasticaProxyRepository $repository
      */
-    public function __construct(FormFactory $formFactory, FilterFactoryInterface $filterFactory, TypeGuesserInterface $guesser, ElasticaProxyRepository $repository, AbstractType $searchForm)
+    public function __construct(FormFactory $formFactory, FilterFactoryInterface $filterFactory, TypeGuesserInterface $guesser, ElasticaProxyRepository $repository, $searchForm)
     {
         parent::__construct($formFactory, $filterFactory, $guesser);
 
@@ -45,7 +45,7 @@ class ElasticaDatagridBuilder extends BaseDatagridBuilder
         $modelClass = $admin->getClass();
         $this->repository->setModelIdentifier(current($admin->getModelManager()->getIdentifierFieldNames($modelClass)));
         $this->repository->setAdmin($admin);
-        
+
         $pager = new ElasticaPager();
         $pager->setCountColumn($admin->getModelManager()->getIdentifierFieldNames($modelClass));
 
