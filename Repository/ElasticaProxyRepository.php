@@ -3,7 +3,7 @@
 namespace Marmelab\SonataElasticaBundle\Repository;
 
 use Elastica\Query;
-use Elastica\Query\Simple as QuerySimple;
+use Elastica\Query\Bool as QueryBool;
 use Elastica\Query\QueryString as QueryText;
 use Elastica\Query\AbstractQuery;
 use FOS\ElasticaBundle\Finder\FinderInterface;
@@ -137,20 +137,19 @@ class ElasticaProxyRepository
      */
     protected function createFilterQuery(array $params)
     {
-        $mainQuery = new Query();
+        $mainQuery = new QueryBool();
         foreach ($params as $name => $value) {
             if (strlen($value) < self::MINIMUM_SEARCH_TERM_LENGTH) {
                 continue;
             }
 
-            //$fieldName = str_replace('_elastica', '', $name);
-            $fieldName = $name;
+            $fieldName = str_replace('_elastica', '', $name);
 
             $fieldQuery = new QueryText($value);
             $fieldQuery->setFields([$fieldName]);
             $mainQuery->addMust($fieldQuery);
         }
 
-        return $mainQuery;
+        return new Query($mainQuery);
     }
 }
