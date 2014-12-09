@@ -2,14 +2,15 @@
 
 namespace Marmelab\SonataElasticaBundle\Transformer;
 
+use FOS\ElasticaBundle\HybridResult;
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 
 class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
 {
 
     protected $options = array(
-        'hydrate'        => false,
-        'identifier'     => '_id',
+        'hydrate' => false,
+        'identifier' => '_id',
         'ignore_missing' => false,
     );
 
@@ -34,7 +35,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
      * Transforms an array of elastica objects into an array of
      * model objects
      *
-     * @param  array             $elasticaObjects of elastica objects
+     * @param  array $elasticaObjects of elastica objects
      * @throws \RuntimeException
      * @return array
      **/
@@ -86,8 +87,8 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
     /**
      * Fetch objects for theses identifier values
      *
-     * @param  array   $identifierValues ids values
-     * @param  Boolean $hydrate          whether or not to hydrate the objects, false returns arrays
+     * @param  array $identifierValues ids values
+     * @param  Boolean $hydrate        whether or not to hydrate the objects, false returns arrays
      * @return array   of objects or arrays
      */
     protected function findByIdentifiers(array $identifierValues, $hydrate)

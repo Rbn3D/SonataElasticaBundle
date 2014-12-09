@@ -4,7 +4,7 @@ namespace Marmelab\SonataElasticaBundle\Repository;
 
 use Elastica\Query;
 use Elastica\Query\Bool as QueryBool;
-use Elastica\Query\Text as QueryText;
+use Elastica\Query\QueryString as QueryText;
 use Elastica\Query\AbstractQuery;
 use FOS\ElasticaBundle\Finder\FinderInterface;
 use Sonata\AdminBundle\Admin\AdminInterface;
@@ -58,11 +58,11 @@ class ElasticaProxyRepository
     }
 
     /**
-     * @param int    $start
-     * @param int    $limit
+     * @param int $start
+     * @param int $limit
      * @param string $sortBy
      * @param string $sortOrder
-     * @param array  $params
+     * @param array $params
      *
      * @return int
      */
@@ -74,11 +74,11 @@ class ElasticaProxyRepository
     }
 
     /**
-     * @param int    $start
-     * @param int    $limit
+     * @param int $start
+     * @param int $limit
      * @param string $sortBy
      * @param string $sortOrder
-     * @param array  $params
+     * @param array $params
      *
      * @return int
      */
@@ -99,11 +99,12 @@ class ElasticaProxyRepository
         } else {
             $query->setSort(array(
                 $this->modelIdentifier => array('order' => strtolower($sortOrder)),
-            ));
+            ))
+            ;
         }
 
         // Custom filter for admin
-        if(method_exists($this->admin, 'getExtraFilter')) {
+        if (method_exists($this->admin, 'getExtraFilter')) {
             $query->setFilter($this->admin->getExtraFilter());
         }
 
@@ -131,7 +132,7 @@ class ElasticaProxyRepository
 
     /**
      * @param array $params
-     * 
+     *
      * @return Query
      */
     protected function createFilterQuery(array $params)
@@ -143,8 +144,8 @@ class ElasticaProxyRepository
                 continue;
             }
 
-            $fieldQuery = new QueryText();
-            $fieldQuery->setFieldQuery($fieldName, $value);
+            $fieldQuery = new QueryText($value);
+            $fieldQuery->setFields([$fieldName]);
             $mainQuery->addMust($fieldQuery);
         }
 
