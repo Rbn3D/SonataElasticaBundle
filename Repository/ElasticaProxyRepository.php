@@ -6,6 +6,7 @@ use Elastica\Query;
 use Elastica\Query\Bool as QueryBool;
 use Elastica\Query\QueryString as QueryText;
 use Elastica\Query\AbstractQuery;
+use Elastica\Query\Wildcard;
 use FOS\ElasticaBundle\Finder\FinderInterface;
 use Sonata\AdminBundle\Admin\AdminInterface;
 
@@ -148,6 +149,10 @@ class ElasticaProxyRepository
             $fieldQuery = new QueryText($value);
             $fieldQuery->setFields([$fieldName]);
             $mainQuery->addMust($fieldQuery);
+        }
+
+        if (!count($params)) {
+            $mainQuery->addMust(new Wildcard());
         }
 
         return new Query($mainQuery);
