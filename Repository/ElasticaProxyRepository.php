@@ -2,8 +2,10 @@
 
 namespace Marmelab\SonataElasticaBundle\Repository;
 
+use Elastica\Filter\Range;
 use Elastica\Query;
 use Elastica\Query\Bool as QueryBool;
+use Elastica\Query\Filtered;
 use Elastica\Query\QueryString as QueryText;
 use Elastica\Query\AbstractQuery;
 use Elastica\Query\Wildcard;
@@ -140,11 +142,36 @@ class ElasticaProxyRepository
     {
         $mainQuery = new QueryBool();
         foreach ($params as $name => $value) {
-            if (strlen($value) < self::MINIMUM_SEARCH_TERM_LENGTH) {
+            if ((is_string($value) && strlen($value) < self::MINIMUM_SEARCH_TERM_LENGTH) || !$value || $value == '') {
                 continue;
             }
 
             $fieldName = str_replace('_elastica', '', $name);
+
+            $filters = $this->admin->getFilterFieldDescriptions();
+            $type = $filters[$fieldName]->getFieldMapping()['type'];
+
+            //$type = $this->admin->getForm()->get($fieldName)->getConfig()->getType()->getName();
+
+            if ($type === 'datetime') {
+                $rangeLower = new Filtered(
+                    $mainQuery,
+                    new Range($fieldName, array(
+                        'gte' => $this->parseDate($params[$fieldName]['start'])
+                    ))
+                );
+
+                $rangeUpper = new Filtered(
+                    $rangeLower,
+                    new Range($fieldName, array(
+                        'lte' => $this->parseDate($params[$fieldName]['end'])
+                    ))
+                );
+
+                $mainQuery->addMust($rangeUpper);
+
+                continue;
+            }
 
             $fieldQuery = new QueryText($value);
             $fieldQuery->setFields([$fieldName]);
@@ -159,5 +186,10 @@ class ElasticaProxyRepository
         }
 
         return new Query($mainQuery);
+    }
+
+    private function parseDate($date)
+    {
+        return $date['date']['year'] . '-' . $date['date']['month'] . '-' . $date['date']['day'];
     }
 }
